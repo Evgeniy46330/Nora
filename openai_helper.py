@@ -2,16 +2,15 @@ import os
 import openai
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_base = os.getenv("OPENAI_API_BASE", "https://api.openai.com/v1")
 
-def ask_openai(prompt, system_prompt=""):
-    messages = []
-    if system_prompt:
-        messages.append({"role": "system", "content": system_prompt})
-    messages.append({"role": "user", "content": prompt})
+def ask_openai(message, system_prompt):
     response = openai.ChatCompletion.create(
-        model="gpt-4o-mini",
-        messages=messages,
-        max_tokens=1000,
-        temperature=0.7,
+        model="openai/gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": message}
+        ],
+        temperature=0.7
     )
     return response.choices[0].message.content.strip()
